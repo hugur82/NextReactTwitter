@@ -34,6 +34,8 @@ const TweetsScheme = z.object({
 
 export type ClientConfig<T> = {
   data?: unknown;
+  // On utilise T dans le zod schema
+  // Ce qui va faire que notre fetch va être automatiquement être typé en fonction du schéma
   zodSchema?: z.ZodSchema<T>;
   method?: 'DELETE' | 'GET' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT';
   headers?: HeadersInit;
@@ -51,7 +53,7 @@ export async function client<T>(
     headers: customHeaders,
     signal,
     customConfig,
-  }: ClientConfig<T> = {}
+  }: ClientConfig<T> = {} // On passe T en paramètre de ClientConfig
 ): Promise<T> {
   const config: RequestInit = {
     method: method ?? (data ? 'POST' : 'GET'),
