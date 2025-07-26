@@ -93,7 +93,7 @@ export async function client<T>(
 }
 
 const getTweets = async (signal: AbortSignal) =>
-  client('/api/tweets?error=test', { signal, zodSchema: TweetsScheme }); // ℹ️ tu peux remplacer l'url par `/api/tweets?error=erreur` pour voir le problème
+  client('/api/tweets', { signal, zodSchema: TweetsScheme }); // ℹ️ tu peux remplacer l'url par `/api/tweets?error=erreur` pour voir le problème
 
 export default function FetchAllTweets() {
   const [tweets, setTweets] = useState<TlTweets | null>(null);
