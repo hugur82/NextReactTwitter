@@ -1,9 +1,7 @@
 import Markdown from 'markdown-to-jsx';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import Link from 'next/link';
-import type { Rule } from '~/lib/fs/rules';
-// 🦁 Importe `getAllRules` et `getRule`
-// import { getAllRules, getRule } from '~/lib/fs/rules';
+import { getAllRules, getRule, type Rule } from '~/lib/fs/rules';
 
 type RuleProps = {
   rule: Rule;
@@ -18,19 +16,22 @@ export default function RulePage({ rule }: RuleProps) {
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  // 🦁 Utilise `getAllRules` pour récupérer toutes les règles
+export const getStaticPaths: GetStaticPaths<{ rule: string }> = async () => {
+  const rules = await getAllRules();
 
   return {
-    // 🦁 Utilise `rules` pour générer les chemins possibles
-    paths: [] as any,
+    paths: rules.map((rule) => ({
+      params: {
+        rule: rule.title,
+      },
+    })),
     fallback: false,
   };
 };
 
 export const getStaticProps: GetStaticProps<
-  RuleProps
-  // 🦁 Ajoute un type pour les paramètres de la route
+  RuleProps,
+  { rule: string }
 > = async ({ params }) => {
   if (!params) {
     return {
@@ -39,12 +40,13 @@ export const getStaticProps: GetStaticProps<
   }
 
   // 🦁 Récupère le paramètre de la route
-  // 🦁 Utilise `getRule` pour récupérer le contenu de la règle
+  const rule = params.rule;
 
+  // 🦁 Utilise `getRule` pour récupérer le contenu de la règle
+  const ruleContent = await getRule(rule);
   return {
     props: {
-      // 🦁 Ajoute la règle
-      rule: undefined as any,
+      rule: ruleContent,
     },
   };
 };
